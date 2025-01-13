@@ -42,12 +42,12 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                // 例如将 APK 上传到远程服务器（可选）
-                sh 'scp naturichprost/build/app/outputs/flutter-apk/app-release.apk user@yourserver:/path/to/destination/'
-            }
-        }
+        // stage('Deploy') {
+        //     steps {
+        //         // 例如将 APK 上传到远程服务器（可选）
+        //         sh 'scp naturichprost/build/app/outputs/flutter-apk/app-release.apk user@yourserver:/path/to/destination/'
+        //     }
+        // }
     }
 
     post {
