@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        FLUTTER_HOME = '/usr/local/flutter/flutter'
+        FLUTTER_HOME = '/usr/local/flutter'
         ANDROID_HOME = '/usr/local/sdk'
         PATH = "${FLUTTER_HOME}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${env.PATH}"
     }
