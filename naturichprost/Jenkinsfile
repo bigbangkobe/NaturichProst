@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // 从 Git 仓库拉取最新代码
-                git branch: 'main', url: 'https://github.com/bigbangkobe/NaturichProst.git'
+                git 'https://github.com/bigbangkobe/NaturichProst.git'
             }
         }
 
