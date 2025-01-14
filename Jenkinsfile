@@ -67,7 +67,8 @@ pipeline {
     post {
         always {
             // 在每次构建后清理工作区
-            cleanWs()
+            //cleanWs()
+            echo 'Build completed without workspace cleanup.'
         }
     }
 }
