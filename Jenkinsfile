@@ -4,7 +4,8 @@ pipeline {
     environment {
         FLUTTER_HOME = '/usr/local/flutter'
         ANDROID_HOME = '/usr/local/sdk'
-        PATH = "${FLUTTER_HOME}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${env.PATH}"
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        PATH = "${FLUTTER_HOME}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${JAVA_HOME}/bin:${env.PATH}"
     }
 
     parameters {
