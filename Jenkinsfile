@@ -7,6 +7,12 @@ pipeline {
         PATH = "${FLUTTER_HOME}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${env.PATH}"
     }
 
+    parameters {
+        // 在Jenkins构建时传递url和fbc的值
+        string(name: 'URL', defaultValue: 'https://www.baidu.com', description: 'The URL to be used in the app')
+        string(name: 'FBC', defaultValue: '123', description: 'The FBC value to be used in the app')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -21,6 +27,20 @@ pipeline {
                 dir('naturichprost') {
                     // 安装 Flutter 依赖
                     sh 'flutter pub get'
+                }
+            }
+        }
+
+        stage('Generate Config File') {
+            steps {
+                script {
+                    // 动态生成 config.json 文件，将 URL 和 FBC 的值写入文件
+                    writeFile file: 'naturichprost/assets/config/config.json', text: """
+                    {
+                        "url": "${params.URL}",
+                        "fbc": "${params.FBC}"
+                    }
+                    """
                 }
             }
         }
@@ -41,13 +61,6 @@ pipeline {
                 archiveArtifacts artifacts: 'naturichprost/build/app/outputs/flutter-apk/*.apk', allowEmptyArchive: true
             }
         }
-
-        // stage('Deploy') {
-        //     steps {
-        //         // 例如将 APK 上传到远程服务器（可选）
-        //         sh 'scp naturichprost/build/app/outputs/flutter-apk/app-release.apk user@yourserver:/path/to/destination/'
-        //     }
-        // }
     }
 
     post {
