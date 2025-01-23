@@ -55,13 +55,16 @@ pipeline {
 
         stage('Build APK') {
             steps {
-                // 进入 flutter 项目的实际根目录并构建 APK
                 dir('naturichprost') {
-                    // 构建 Release APK
-                    sh 'flutter build apk --release --build-name=1.0.0 --build-number=1'
+                    // 构建 Release APK，并打印输出路径
+                    sh '''
+                        flutter build apk --release --build-name=1.0.0 --build-number=1
+                        echo "APK built at: ${PWD}/build/app/outputs/flutter-apk/"
+                    '''
                 }
             }
         }
+
         
         stage('Rename APK') {
             steps {
