@@ -95,10 +95,13 @@ pipeline {
                         def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${env.NEW_APK_NAME}"
                         def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
 
-                        // 使用 bash 来运行脚本并上传文件
+                        // 创建一个临时文件并写入 put 命令
+                        writeFile(file: 'sftp_commands.txt', text: "put ${newApkPath}")
+
+                        // 使用 sshpass 和 sftp 上传文件
                         sh """
                             #!/bin/bash
-                            sshpass -p '${FTP_PASSWORD}' sftp -oBatchMode=no -oStrictHostKeyChecking=no ${sftpUrl} <<< "put ${newApkPath}"
+                            sshpass -p '${FTP_PASSWORD}' sftp -oBatchMode=no -oStrictHostKeyChecking=no -b sftp_commands.txt ${sftpUrl}
                         """
                         echo "APK uploaded to SFTP server."
                     } catch (Exception e) {
@@ -110,7 +113,6 @@ pipeline {
                 }
             }
         }
-
 
 
         stage('Generate Download URL') {
