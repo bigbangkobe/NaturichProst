@@ -88,25 +88,33 @@ pipeline {
         stage('Upload to SFTP') {
             steps {
                 script {
-                    // 设置上传路径
-                    def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${newApkName}"
-                    def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
+                    try {
+                        // 设置上传路径
+                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${newApkName}"
+                        def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
 
-                    // 使用 sftp 命令上传 APK 文件
-                    sh """
-                        # 使用 SFTP 上传 APK 文件
-                        sftp -oBatchMode=no -b - ${sftpUrl} <<EOF
-                        put ${newApkPath}
-                        EOF
-                    """
-                    echo "APK uploaded to SFTP server."
+                        // 使用 sftp 命令上传 APK 文件
+                        sh """
+                            # 使用 SFTP 上传 APK 文件
+                            sftp -oBatchMode=no -b - ${sftpUrl} <<EOF
+                            put ${newApkPath}
+                            EOF
+                        """
+                        echo "APK uploaded to SFTP server."
 
-                    // 生成下载 URL
-                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
-                    echo "Download URL: ${downloadUrl}"
+                        // 生成下载 URL
+                        def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
+                        echo "Download URL: ${downloadUrl}"
 
-                    // 将下载链接输出到 Jenkins 构建描述中
-                    currentBuild.description = "APK is ready for download: ${downloadUrl}"
+                        // 将下载链接输出到 Jenkins 构建描述中
+                        currentBuild.description = "APK is ready for download: ${downloadUrl}"
+
+                    } catch (Exception e) {
+                        // 输出错误信息
+                        echo "SFTP upload failed with error: ${e.getMessage()}"
+                        currentBuild.result = 'FAILURE'  // 设置构建状态为失败
+                        throw e  // 抛出异常，终止后续步骤
+                    }
                 }
             }
         }
