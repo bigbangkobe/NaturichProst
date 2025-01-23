@@ -10,7 +10,6 @@ pipeline {
         FTP_USERNAME = 'ftpuser'
         FTP_PASSWORD = 'Aa910625963'
         FTP_UPLOAD_PATH = '/home/ftpuser'
-        NEW_APK_NAME = ''
     }
 
     parameters {
@@ -77,14 +76,14 @@ pipeline {
 
                     // 设置新的 APK 文件名
                     def newApkName = "${appName}_${url}_${fbc}_${timestamp}.apk"
-                    // 通过 env 直接更新环境变量
-                    env.NEW_APK_NAME = newApkName
+                    // 将动态生成的 APK 名称存储在 currentBuild.description 中
+                    currentBuild.description = newApkName
                     
                     // 使用环境变量命名 APK
                     def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-release.apk'
-                    sh "mv ${apkPath} naturichprost/build/app/outputs/flutter-apk/${env.NEW_APK_NAME}"
+                    sh "mv ${apkPath} naturichprost/build/app/outputs/flutter-apk/${currentBuild.description}"
 
-                    echo "Renamed APK to ${env.NEW_APK_NAME}"
+                    echo "Renamed APK to ${currentBuild.description}"
                 }
             }
         }
@@ -94,7 +93,7 @@ pipeline {
                 script {
                     try {
                         // 设置上传路径
-                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${env.NEW_APK_NAME}"
+                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${currentBuild.description}"
                         def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
 
                         // 创建一个临时文件并写入 put 命令
@@ -121,7 +120,7 @@ pipeline {
             steps {
                 script {
                     // 生成下载链接
-                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${env.NEW_APK_NAME}"
+                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${currentBuild.description}"
                     echo "Download URL: ${downloadUrl}"
                     
                     // 将下载链接输出到 Jenkins 控制台
