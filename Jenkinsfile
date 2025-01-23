@@ -78,7 +78,8 @@ pipeline {
                     // 设置新的 APK 文件名
                     def newApkName = "${appName}_${url}_${fbc}_${timestamp}.apk"
                     // 将新的 APK 名称保存为环境变量，以便在后续步骤中使用
-                    env.NEW_APK_NAME = newApkName
+                    echo "New APK name: ${newApkName}"
+                    env.NEW_APK_NAME = newApkName  // 在这里设置环境变量
                     // 定义 APK 文件路径
                     def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-release.apk'
 
