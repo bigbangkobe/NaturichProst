@@ -10,10 +10,8 @@ pipeline {
         FTP_USERNAME = 'ftpuser'
         FTP_PASSWORD = 'Aa910625963'
         FTP_UPLOAD_PATH = '/home/ftpuser'
+        NEW_APK_NAME = ''
     }
-
-    // 你也可以通过 script 定义全局变量
-    def NEW_APK_NAME = ""
 
     parameters {
         // 在Jenkins构建时传递url和fbc的值
@@ -79,14 +77,14 @@ pipeline {
 
                     // 设置新的 APK 文件名
                     def newApkName = "${appName}_${url}_${fbc}_${timestamp}.apk"
-                    NEW_APK_NAME = newApkName；
-                    // 定义 APK 文件路径
+                    // 通过 env 直接更新环境变量
+                    env.NEW_APK_NAME = newApkName
+                    
+                    // 使用环境变量命名 APK
                     def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-release.apk'
+                    sh "mv ${apkPath} naturichprost/build/app/outputs/flutter-apk/${env.NEW_APK_NAME}"
 
-                    // 重命名 APK 文件
-                    sh "mv ${apkPath} naturichprost/build/app/outputs/flutter-apk/${newApkName}"
-
-                    echo "Renamed APK to ${newApkName}"
+                    echo "Renamed APK to ${env.NEW_APK_NAME}"
                 }
             }
         }
@@ -96,7 +94,7 @@ pipeline {
                 script {
                     try {
                         // 设置上传路径
-                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${NEW_APK_NAME}"
+                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${env.NEW_APK_NAME}"
                         def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
 
                         // 创建一个临时文件并写入 put 命令
@@ -123,7 +121,7 @@ pipeline {
             steps {
                 script {
                     // 生成下载链接
-                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${NEW_APK_NAME}"
+                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${env.NEW_APK_NAME}"
                     echo "Download URL: ${downloadUrl}"
                     
                     // 将下载链接输出到 Jenkins 控制台
