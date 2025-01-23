@@ -97,8 +97,8 @@ pipeline {
 
                         // 使用 sftp 命令上传 APK 文件
                         sh """
-                            # 使用 SFTP 上传 APK 文件
-                            sftp -oBatchMode=no -b - ${sftpUrl} <<EOF
+                            # 使用 SFTP 上传 APK 文件，禁用主机密钥验证
+                            sftp -oBatchMode=no -oStrictHostKeyChecking=no -b - ${sftpUrl} <<EOF
                             put ${newApkPath}
                             EOF
                         """
