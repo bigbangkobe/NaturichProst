@@ -10,6 +10,7 @@ pipeline {
         FTP_USERNAME = 'ftpuser'
         FTP_PASSWORD = 'Aa910625963'
         FTP_UPLOAD_PATH = '/home/ftpuser'
+        NEW_APK_NAME = 'apk'
     }
 
     parameters {
@@ -67,13 +68,14 @@ pipeline {
                 script {
                     // 获取当前时间戳
                     def timestamp = sh(script: "date +%Y%m%d%H%M%S", returnStdout: true).trim()
-                    def appName = 'naturichprost'  // 替换为你的应用名称（或动态获取）
+                    def appName = params.NAME  // 替换为你的应用名称（或动态获取）
                     def url = params.URL.replaceAll('https?://', '').replaceAll('/', '_')  // 将URL中的特殊字符转换为下划线
                     def fbc = params.FBC
 
                     // 设置新的 APK 文件名
                     def newApkName = "${appName}_${url}_${fbc}_${timestamp}.apk"
-
+                    // 将新的 APK 名称保存为环境变量，以便在后续步骤中使用
+                    env.NEW_APK_NAME = newApkName
                     // 定义 APK 文件路径
                     def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-release.apk'
 
@@ -90,7 +92,7 @@ pipeline {
                 script {
                     try {
                         // 设置上传路径
-                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${newApkName}"
+                        def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${env.NEW_APK_NAME}"
                         def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
 
                         // 使用 sftp 命令上传 APK 文件
@@ -101,14 +103,6 @@ pipeline {
                             EOF
                         """
                         echo "APK uploaded to SFTP server."
-
-                        // 生成下载 URL
-                        def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
-                        echo "Download URL: ${downloadUrl}"
-
-                        // 将下载链接输出到 Jenkins 构建描述中
-                        currentBuild.description = "APK is ready for download: ${downloadUrl}"
-
                     } catch (Exception e) {
                         // 输出错误信息
                         echo "SFTP upload failed with error: ${e.getMessage()}"
@@ -125,7 +119,7 @@ pipeline {
             steps {
                 script {
                     // 生成下载链接
-                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
+                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${env.NEW_APK_NAME}"
                     echo "Download URL: ${downloadUrl}"
                     
                     // 将下载链接输出到 Jenkins 控制台
