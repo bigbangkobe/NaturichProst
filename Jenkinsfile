@@ -85,18 +85,18 @@ pipeline {
             }
         }
 
-        stage('Upload to FTP') {
+        stage('Upload to SFTP') {
             steps {
                 script {
                     // 使用 curl 命令将文件上传到 FTP 服务器
                     def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${newApkName}"
-                    def ftpUrl = "ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
+                    def ftpUrl = "sftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
 
                     // 上传 APK 文件到 FTP
                     sh """
                         curl -T ${newApkPath} ${ftpUrl}
                     """
-                    echo "APK uploaded to FTP server."
+                    echo "APK uploaded to SFTP server."
                 }
             }
         }
