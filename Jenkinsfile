@@ -6,7 +6,7 @@ pipeline {
         ANDROID_HOME = '/usr/local/sdk'
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         PATH = "${FLUTTER_HOME}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${JAVA_HOME}/bin:${env.PATH}"
-        FTP_SERVER = 'ftp://naturich.top'
+        FTP_SERVER = 'naturich.top'
         FTP_USERNAME = 'ftpuser'
         FTP_PASSWORD = 'Aa910625963'
         FTP_UPLOAD_PATH = '/home/ftpuser'
@@ -88,18 +88,30 @@ pipeline {
         stage('Upload to SFTP') {
             steps {
                 script {
-                    // 使用 curl 命令将文件上传到 FTP 服务器
+                    // 设置上传路径
                     def newApkPath = "naturichprost/build/app/outputs/flutter-apk/${newApkName}"
-                    def ftpUrl = "sftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
+                    def sftpUrl = "${FTP_USERNAME}@${FTP_SERVER}:${FTP_UPLOAD_PATH}"
 
-                    // 上传 APK 文件到 FTP
+                    // 使用 sftp 命令上传 APK 文件
                     sh """
-                        curl -T ${newApkPath} ${ftpUrl}
+                        # 使用 SFTP 上传 APK 文件
+                        sftp -oBatchMode=no -b - ${sftpUrl} <<EOF
+                        put ${newApkPath}
+                        EOF
                     """
                     echo "APK uploaded to SFTP server."
+
+                    // 生成下载 URL
+                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${newApkName}"
+                    echo "Download URL: ${downloadUrl}"
+
+                    // 将下载链接输出到 Jenkins 构建描述中
+                    currentBuild.description = "APK is ready for download: ${downloadUrl}"
                 }
             }
         }
+
+
 
         stage('Generate Download URL') {
             steps {
