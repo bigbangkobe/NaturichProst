@@ -38,6 +38,7 @@ dependencies:
   build_runner: ^2.1.4
   webview_flutter: ^4.10.0
   logger: ^2.5.0
+  flutter_launcher_icons: ^0.14.2
 
 dev_dependencies:
   flutter_test:
@@ -62,3 +63,10 @@ flutter:
   
   assets:
     - assets/config/config.json
+    - assets/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  min_sdk_android: 21
