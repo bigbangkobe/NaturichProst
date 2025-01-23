@@ -120,7 +120,7 @@ pipeline {
             steps {
                 script {
                     // 生成下载链接
-                    def downloadUrl = "http://${FTP_SERVER}${FTP_UPLOAD_PATH}/${currentBuild.description}"
+                    def downloadUrl = "https://${FTP_SERVER}${FTP_UPLOAD_PATH}/${currentBuild.description}"
                     echo "Download URL: ${downloadUrl}"
                     
                     // 将下载链接输出到 Jenkins 控制台
