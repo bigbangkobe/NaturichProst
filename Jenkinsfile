@@ -124,7 +124,7 @@ pipeline {
                     echo "Download URL: ${downloadUrl}"
                     
                     // 将下载链接输出到 Jenkins 控制台
-                    currentBuild.description = "APK is ready for download: ${downloadUrl}"
+                    currentBuild.description = downloadUrl
                 }
             }
         }
