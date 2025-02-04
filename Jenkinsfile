@@ -75,7 +75,7 @@ pipeline {
                     def fbc = params.FBC
 
                     // 设置新的 APK 文件名
-                    def newApkName = "${appName}_${url}_${fbc}_${timestamp}.apk"
+                    def newApkName = "${appName}_${fbc}_${timestamp}.apk"
                     // 将动态生成的 APK 名称存储在 currentBuild.description 中
                     currentBuild.description = newApkName
                     
