@@ -65,7 +65,7 @@ class _WebViewPageState extends State<WebViewPage> {
           ),
         )
         // 将 URL 和 fbc 参数拼接到加载的 URL
-        ..loadRequest(Uri.parse('$url?fbc=$fbc'));
+        ..loadRequest(Uri.parse('$url&fbc=$fbc'));
       logger.d("url:$url" ",fbc=$fbc");
     });
   }
