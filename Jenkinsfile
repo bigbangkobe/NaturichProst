@@ -129,12 +129,12 @@ pipeline {
             }
         }
 
-        stage('Archive APK') {
-            steps {
-                // 存档构建的 APK 文件
-                archiveArtifacts artifacts: 'naturichprost/build/app/outputs/flutter-apk/*.apk', allowEmptyArchive: true
-            }
-        }
+        // stage('Archive APK') {
+        //     steps {
+        //         // 存档构建的 APK 文件
+        //         archiveArtifacts artifacts: 'naturichprost/build/app/outputs/flutter-apk/*.apk', allowEmptyArchive: true
+        //     }
+        // }
     }
 
     post {
