@@ -135,7 +135,7 @@ pipeline {
         always {
             // 清理工作区
             echo 'Cleaning workspace...'
-            deleteDir()  // 删除工作区中的所有文件和目录
+            //deleteDir()  // 删除工作区中的所有文件和目录
         }
     }
 }
