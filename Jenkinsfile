@@ -13,7 +13,6 @@ pipeline {
     }
 
     parameters {
-        // 在Jenkins构建时传递url和fbc的值
         string(name: 'URL', defaultValue: 'https://www.baidu.com', description: 'The URL to be used in the app')
         string(name: 'FBC', defaultValue: '123', description: 'The FBC value to be used in the app')
         string(name: 'NAME', defaultValue: 'APP', description: 'App Name')
@@ -29,10 +28,15 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // 进入 flutter 项目的实际根目录
                 dir('naturichprost') {
-                    // 安装 Flutter 依赖
-                    sh 'flutter pub get'
+                    // 使用缓存 Flutter 依赖，避免每次都重新下载
+                    sh '''
+                        if [ ! -d "$WORKSPACE/.pub-cache" ]; then
+                            flutter pub get
+                        else
+                            echo "Using cached Flutter dependencies"
+                        fi
+                    '''
                 }
             }
         }
@@ -40,7 +44,7 @@ pipeline {
         stage('Generate Config File') {
             steps {
                 script {
-                    // 动态生成 config.json 文件，将 URL 和 FBC 的值写入文件
+                    // 动态生成 config.json 文件
                     writeFile file: 'naturichprost/assets/config/config.json', text: """
                     {
                         "url": "${params.URL}",
@@ -55,28 +59,26 @@ pipeline {
         stage('Build APK') {
             steps {
                 dir('naturichprost') {
-                    // 构建 Release APK，并打印输出路径
+                    // 增量构建：避免完全重建所有部分，特别是图标等
                     sh '''
-                        flutter build apk --release --build-name=1.0.0 --build-number=1
+                        flutter build apk --release --build-name=1.0.0 --build-number=1 --no-tree-shake-icons
                         echo "APK built at: ${PWD}/build/app/outputs/flutter-apk/"
                     '''
                 }
             }
         }
 
-        
         stage('Rename APK') {
             steps {
                 script {
                     // 获取当前时间戳
                     def timestamp = sh(script: "date +%Y%m%d%H%M%S", returnStdout: true).trim()
-                    def appName = params.NAME  // 替换为你的应用名称（或动态获取）
-                    def url = params.URL.replaceAll('https?://', '').replaceAll('/', '_')  // 将URL中的特殊字符转换为下划线
+                    def appName = params.NAME  // 应用名称（动态获取）
+                    def url = params.URL.replaceAll('https?://', '').replaceAll('/', '_')  // URL 转换为有效文件名
                     def fbc = params.FBC
 
                     // 设置新的 APK 文件名
                     def newApkName = "${appName}_${fbc}_${timestamp}.apk"
-                    // 将动态生成的 APK 名称存储在 currentBuild.description 中
                     currentBuild.description = newApkName
                     
                     // 使用环境变量命名 APK
@@ -115,7 +117,6 @@ pipeline {
             }
         }
 
-
         stage('Generate Download URL') {
             steps {
                 script {
@@ -128,13 +129,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Archive APK') {
-        //     steps {
-        //         // 存档构建的 APK 文件
-        //         archiveArtifacts artifacts: 'naturichprost/build/app/outputs/flutter-apk/*.apk', allowEmptyArchive: true
-        //     }
-        // }
     }
 
     post {
