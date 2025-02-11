@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
@@ -36,7 +38,12 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   void initState() {
     super.initState();
+    logger.d("初始化函数");
+    init();
+  }
 
+  Future<void> init() async {
+    String deviceId = await getDeviceId();
     loadConfig().then((_) {
       controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -65,9 +72,25 @@ class _WebViewPageState extends State<WebViewPage> {
           ),
         )
         // 将 URL 和 fbc 参数拼接到加载的 URL
-        ..loadRequest(Uri.parse('$url&fbc=$fbc'));
+        ..loadRequest(Uri.parse('$url&fbc=$fbc&deviceId=$deviceId'));
       logger.d("url:$url" ",fbc=$fbc");
     });
+  }
+
+  //获得设备码
+  Future<String> getDeviceId() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String deviceId = '';
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      deviceId = androidInfo.id; // 设备的唯一标识符
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      deviceId = iosInfo.identifierForVendor!; // 设备的唯一标识符
+    }
+    logger.d("deviceId=$deviceId");
+    return deviceId;
   }
 
   // 加载config.json

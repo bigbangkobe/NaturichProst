@@ -39,6 +39,7 @@ dependencies:
   webview_flutter: ^4.10.0
   logger: ^2.5.0
   flutter_launcher_icons: ^0.14.2
+  device_info_plus: ^11.3.0
 
 dev_dependencies:
   flutter_test:
