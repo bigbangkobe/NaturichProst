@@ -58,7 +58,8 @@ pipeline {
 
         stage('Generate Launcher Icons') {
             steps {
-                script {
+               // 确保工作目录为 Flutter 项目的根目录
+                dir('naturichprost') {
                     // 运行 flutter_launcher_icons 来生成图标
                     sh 'flutter pub run flutter_launcher_icons:main'
                 }
