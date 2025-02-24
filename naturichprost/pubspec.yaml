@@ -68,6 +68,6 @@ flutter:
 
 flutter_launcher_icons:
   android: true
-  ios: true
+  ios: false
   image_path: "assets/TR8BET.jpg"
   min_sdk_android: 21
