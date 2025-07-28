@@ -6,7 +6,7 @@ pipeline {
         ANDROID_HOME = '/usr/local/sdk'
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         PATH = "${FLUTTER_HOME}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${JAVA_HOME}/bin:${env.PATH}"
-        FTP_SERVER = 'naturich.top'
+        FTP_SERVER = 'naturich.xin'
         FTP_USERNAME = 'ftpuser'
         FTP_PASSWORD = 'Aa910625963'
         FTP_UPLOAD_PATH = '/home/ftpuser'
