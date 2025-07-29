@@ -98,7 +98,7 @@ pipeline {
                 dir('naturichprost') {
                     // 增量构建：避免完全重建所有部分，特别是图标等
                     sh '''
-                        flutter build apk --release --build-name=1.0.0 --build-number=1 --no-tree-shake-icons
+                        flutter build apk --debug --build-name=1.0.0 --build-number=1 --no-tree-shake-icons
                         echo "APK built at: ${PWD}/build/app/outputs/flutter-apk/"
                     '''
                 }
