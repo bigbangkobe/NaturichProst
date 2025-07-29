@@ -50,22 +50,22 @@ class _WebViewPageState extends State<WebViewPage> {
         ..setNavigationDelegate(
           NavigationDelegate(
             onProgress: (int progress) {
-              // logger.d("onProgress$progress");
+              logger.d("onProgress$progress");
             },
             onPageStarted: (String url) {
-              // logger.d("onPageStarted$url");
+              logger.d("onPageStarted$url");
             },
             onPageFinished: (String url) {
-              // logger.d("onPageFinished$url");
+              logger.d("onPageFinished$url");
             },
             onHttpError: (HttpResponseError error) {
-              // logger.d("onHttpError$error");
+              logger.d("onHttpError$error");
             },
             onWebResourceError: (WebResourceError error) {
-              // logger.d("onWebResourceError$error");
+              logger.d("onWebResourceError$error");
             },
             onNavigationRequest: (NavigationRequest request) {
-              // logger.d("onNavigationRequest$request");
+              logger.d("onNavigationRequest$request");
               // 你可以根据需要判断并拦截 URL
               return NavigationDecision.navigate;
             },
