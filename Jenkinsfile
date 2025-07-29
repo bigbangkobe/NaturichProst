@@ -98,7 +98,7 @@ pipeline {
                 dir('naturichprost') {
                     // 增量构建：避免完全重建所有部分，特别是图标等
                     sh '''
-                        flutter build apk --debug --build-name=1.0.0 --build-number=1 --no-tree-shake-icons
+                        flutter build apk --release --build-name=1.0.0 --build-number=1 --no-tree-shake-icons
                         echo "APK built at: ${PWD}/build/app/outputs/flutter-apk/"
                     '''
                 }
@@ -119,7 +119,7 @@ pipeline {
                     currentBuild.description = newApkName
                     
                     // 使用环境变量命名 APK
-                    def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-debug.apk'
+                    def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-release.apk'
                     sh "mv ${apkPath} naturichprost/build/app/outputs/flutter-apk/${currentBuild.description}"
 
                     echo "Renamed APK to ${currentBuild.description}"
