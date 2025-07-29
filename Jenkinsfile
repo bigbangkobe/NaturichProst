@@ -119,7 +119,7 @@ pipeline {
                     currentBuild.description = newApkName
                     
                     // 使用环境变量命名 APK
-                    def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-release.apk'
+                    def apkPath = 'naturichprost/build/app/outputs/flutter-apk/app-debug.apk'
                     sh "mv ${apkPath} naturichprost/build/app/outputs/flutter-apk/${currentBuild.description}"
 
                     echo "Renamed APK to ${currentBuild.description}"
